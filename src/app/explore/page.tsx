@@ -5,24 +5,80 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Search, Sparkles, CheckCircle2, Flame, MapPin, DollarSign, Filter } from 'lucide-react';
 
+const INITIAL_EXPLORE_CREATORS = [
+  {
+    id: 'c-elena',
+    name: 'Elena Ray',
+    username: 'elenaray',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
+    cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
+    profession: 'Fashion & Fitness',
+    bio: 'Exclusive weekly 4K sets, behind-the-scenes, and daily 1-on-1 private messaging!',
+    creatorMonthlyPrice: 10,
+    isVerified: true,
+    _count: { posts: 142, subscriptionsReceived: 890 },
+  },
+  {
+    id: 'c-alex',
+    name: 'Alex Rivera',
+    username: 'alexrivera',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80',
+    cover: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80',
+    profession: 'Fitness Coach',
+    bio: 'Personalized training blueprints, daily nutrition logs, and workout live streams.',
+    creatorMonthlyPrice: 15,
+    isVerified: true,
+    _count: { posts: 98, subscriptionsReceived: 620 },
+  },
+  {
+    id: 'c-mia',
+    name: 'Mia Chen',
+    username: 'miachen',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80',
+    cover: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&auto=format&fit=crop&q=80',
+    profession: 'Art & Photography',
+    bio: 'Uncompressed RAW photoshoot galleries, color grading presets, and tutorial reels.',
+    creatorMonthlyPrice: 12,
+    isVerified: true,
+    _count: { posts: 64, subscriptionsReceived: 410 },
+  },
+  {
+    id: 'c-marcus',
+    name: 'Marcus Vance',
+    username: 'marcusvance',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80',
+    cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80',
+    profession: 'Musician & Producer',
+    bio: 'Early access track stems, acoustic studio sessions, and VIP discord access.',
+    creatorMonthlyPrice: 8,
+    isVerified: true,
+    _count: { posts: 51, subscriptionsReceived: 330 },
+  },
+];
+
 export default function ExplorePage() {
-  const [creators, setCreators] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [creators, setCreators] = useState<any[]>(INITIAL_EXPLORE_CREATORS);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   useEffect(() => {
     const fetchCreators = async () => {
-      setLoading(true);
       try {
         const res = await api.get('/users/explore');
-        if (res.data?.success) {
-          setCreators(res.data.creators || []);
+        if (res.data?.success && res.data.creators && res.data.creators.length > 0) {
+          // Merge with initial ensuring no duplicates
+          const fetched: any[] = res.data.creators;
+          const merged = [...fetched];
+          INITIAL_EXPLORE_CREATORS.forEach((initC) => {
+            if (!merged.some((m) => m.username === initC.username)) {
+              merged.push(initC);
+            }
+          });
+          setCreators(merged);
         }
       } catch (err) {
         console.error('Failed to load explore creators:', err);
-      } finally {
-        setLoading(false);
       }
     };
     fetchCreators();
@@ -31,25 +87,31 @@ export default function ExplorePage() {
   const categories = ['ALL', 'Fitness', 'Fashion', 'Art & Photography', 'Musician', 'Cosplay', 'Gaming'];
 
   const filteredCreators = creators.filter((c) => {
+    const q = search.toLowerCase().trim();
     const matchesSearch =
-      c.name?.toLowerCase().includes(search.toLowerCase()) ||
-      c.username?.toLowerCase().includes(search.toLowerCase()) ||
-      c.profession?.toLowerCase().includes(search.toLowerCase());
+      !q ||
+      c.name?.toLowerCase().includes(q) ||
+      c.username?.toLowerCase().includes(q) ||
+      (c.profession && c.profession.toLowerCase().includes(q)) ||
+      (c.bio && c.bio.toLowerCase().includes(q));
+
     const matchesCategory =
       selectedCategory === 'ALL' ||
-      c.profession?.toLowerCase().includes(selectedCategory.toLowerCase());
-    return matchesSearch && matchesCategory;
+      (c.profession && c.profession.toLowerCase().includes(selectedCategory.toLowerCase())) ||
+      (c.bio && c.bio.toLowerCase().includes(selectedCategory.toLowerCase()));
+
+    return Boolean(matchesSearch && matchesCategory);
   });
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-16">
+    <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 pb-16 px-1 sm:px-0">
       {/* Header */}
-      <div className="text-center space-y-3 max-w-xl mx-auto pt-4">
+      <div className="text-center space-y-3 max-w-xl mx-auto pt-2 sm:pt-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/25 text-brand-400 text-xs font-bold">
           <Flame className="w-3.5 h-3.5 fill-brand-500" />
           <span>VIP Discover</span>
         </div>
-        <h1 className="font-editorial text-3xl sm:text-4xl font-black text-white tracking-tight">
+        <h1 className="font-editorial text-2xl sm:text-4xl font-black text-white tracking-tight">
           Explore Elite Creators
         </h1>
         <p className="text-xs sm:text-sm text-slate-400">
@@ -70,7 +132,7 @@ export default function ExplorePage() {
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -87,18 +149,22 @@ export default function ExplorePage() {
       </div>
 
       {/* Creators Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-80 bg-dark-card border border-dark-border rounded-3xl animate-pulse" />
-          ))}
-        </div>
-      ) : filteredCreators.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-3xl p-12 text-center text-slate-500 text-xs">
-          No creators found matching &quot;{search}&quot;.
+      {filteredCreators.length === 0 ? (
+        <div className="bg-dark-card border border-dark-border rounded-3xl p-12 text-center text-slate-400 text-xs space-y-3">
+          <Sparkles className="w-6 h-6 text-brand-500 mx-auto" />
+          <p>No creators found matching &quot;{search}&quot; in {selectedCategory}.</p>
+          <button
+            onClick={() => {
+              setSearch('');
+              setSelectedCategory('ALL');
+            }}
+            className="px-4 py-2 rounded-full bg-brand-500/10 text-brand-400 font-bold border border-brand-500/20 text-xs hover:bg-brand-500 hover:text-white transition-all"
+          >
+            Reset Filters
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {filteredCreators.map((creator) => (
             <div
               key={creator.id}
@@ -106,7 +172,7 @@ export default function ExplorePage() {
             >
               <div>
                 {/* Cover Banner */}
-                <div className="h-32 w-full bg-slate-800 relative overflow-hidden">
+                <div className="h-32 sm:h-36 w-full bg-slate-800 relative overflow-hidden">
                   <img
                     src={creator.cover || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80'}
                     alt={creator.name}
