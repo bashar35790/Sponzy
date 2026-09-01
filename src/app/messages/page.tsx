@@ -49,6 +49,45 @@ export default function MessagesPage() {
       lastMessageAt: '11:15 AM',
       isRead: false,
     },
+    {
+      id: 'c3',
+      partner: {
+        id: '3',
+        name: 'Mia Chen',
+        username: 'miachen',
+        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+        isVerified: true,
+      },
+      lastMessage: 'Uploaded the new RAW Lightroom presets in the shop! 🎨',
+      lastMessageAt: 'Yesterday',
+      isRead: true,
+    },
+    {
+      id: 'c4',
+      partner: {
+        id: '4',
+        name: 'Marcus Vance',
+        username: 'marcusvance',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        isVerified: true,
+      },
+      lastMessage: 'Catch the live stream audio recording tonight at 8 PM 🎸',
+      lastMessageAt: 'Aug 29',
+      isRead: true,
+    },
+    {
+      id: 'c5',
+      partner: {
+        id: '5',
+        name: 'Sophia Loren',
+        username: 'sophialoren',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+        isVerified: true,
+      },
+      lastMessage: 'Thank you for your generous tip! Enjoy the gallery 💕',
+      lastMessageAt: 'Aug 28',
+      isRead: true,
+    },
   ]);
 
   const [activeConv, setActiveConv] = useState<any>(conversations[0]);
@@ -112,17 +151,17 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-20 px-1 sm:px-0">
-      <div className="bg-dark-card border border-dark-border rounded-3xl h-[calc(100vh-130px)] min-h-[560px] max-h-[850px] overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
+    <div className="max-w-6xl mx-auto h-[calc(100vh-90px)] min-h-[500px] flex flex-col px-1 sm:px-0">
+      <div className="bg-dark-card border border-dark-border rounded-3xl h-full flex-1 min-h-0 overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
         {/* Left Conversations Sidebar (4 cols on desktop, full width on mobile) */}
         <div
-          className={`md:col-span-4 border-r border-dark-border flex flex-col h-full bg-dark-card/90 ${
+          className={`md:col-span-4 border-r border-dark-border flex flex-col h-full bg-dark-card/95 min-h-0 ${
             showMobileChat ? 'hidden md:flex' : 'flex'
           }`}
         >
-          {/* Top Search & Header Bar */}
-          <div className="h-18 px-4 py-3.5 border-b border-dark-border flex flex-col justify-center shrink-0">
-            <div className="relative">
+          {/* Top Search & Header Bar (Fixed h-16) */}
+          <div className="h-16 px-4 border-b border-dark-border flex items-center shrink-0 bg-dark-card">
+            <div className="relative w-full">
               <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-slate-500" />
               <input
                 type="text"
@@ -132,8 +171,8 @@ export default function MessagesPage() {
             </div>
           </div>
 
-          {/* Conversations List */}
-          <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-dark-border/40 scrollbar-none">
+          {/* Scrollable Members List */}
+          <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-dark-border/40">
             {conversations.map((conv) => (
               <button
                 key={conv.id}
@@ -150,7 +189,7 @@ export default function MessagesPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-xs font-bold text-slate-100 truncate">{conv.partner.name}</p>
-                    <span className="text-[10px] text-slate-500">{conv.lastMessageAt}</span>
+                    <span className="text-[10px] text-slate-500 shrink-0">{conv.lastMessageAt}</span>
                   </div>
                   <p className="text-xs text-slate-400 truncate">{conv.lastMessage}</p>
                 </div>
@@ -161,12 +200,12 @@ export default function MessagesPage() {
 
         {/* Right Active Chat Pane (8 cols on desktop, full width on mobile) */}
         <div
-          className={`md:col-span-8 flex flex-col h-full bg-dark-bg/60 ${
+          className={`md:col-span-8 flex flex-col h-full bg-dark-bg/60 min-h-0 ${
             showMobileChat ? 'flex' : 'hidden md:flex'
           }`}
         >
-          {/* Aligned Top Header */}
-          <div className="h-18 px-4 sm:px-6 border-b border-dark-border flex items-center justify-between bg-dark-card/95 shrink-0 z-10">
+          {/* Top Header (Matching h-16) */}
+          <div className="h-16 px-4 sm:px-6 border-b border-dark-border flex items-center justify-between bg-dark-card/95 shrink-0 z-10">
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setShowMobileChat(false)}
@@ -198,7 +237,7 @@ export default function MessagesPage() {
             </button>
           </div>
 
-          {/* Messages Stream with Perfectly Sized Responsive Bubbles */}
+          {/* Messages Stream (Independent Internal Scroll) */}
           <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-3.5">
             {messages.map((m) => {
               const isMine = m.senderId === user?.id || m.senderId === 'me';
@@ -209,7 +248,7 @@ export default function MessagesPage() {
 
               return (
                 <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                  {/* Sent Message Bubble (Hugs Content Naturally) */}
+                  {/* Sent Message Bubble */}
                   {isMine ? (
                     <div className="max-w-[85%] sm:max-w-[70%] bg-gradient-to-r from-brand-600 via-brand-500 to-amber-500 text-white rounded-2xl rounded-tr-xs px-3.5 py-2 shadow-lg shadow-brand-500/15">
                       <div className="flex flex-wrap items-baseline justify-end gap-x-2.5 gap-y-0.5">
@@ -263,7 +302,7 @@ export default function MessagesPage() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Guaranteed Visible Message Input Bar */}
+          {/* Guaranteed Visible Message Input Bar (Fixed Bottom) */}
           <div className="p-3 sm:p-4 border-t border-dark-border bg-dark-card/95 shrink-0 z-10">
             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
               <button
