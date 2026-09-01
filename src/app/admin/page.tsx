@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Clock,
   UserCheck,
+  Flame,
 } from 'lucide-react';
 
 export default function AdminPage() {
@@ -72,7 +73,6 @@ export default function AdminPage() {
     setActionLoading(id);
     try {
       await api.put(`/admin/verifications/${id}`, { status });
-      // Update local state
       setVerifications((prev) =>
         prev.map((item) => (item.id === id ? { ...item, status } : item))
       );
@@ -96,7 +96,7 @@ export default function AdminPage() {
   if (authLoading || (!user && loading)) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
-        <RefreshCw className="w-8 h-8 text-pink-500 animate-spin" />
+        <RefreshCw className="w-8 h-8 text-brand-500 animate-spin" />
       </div>
     );
   }
@@ -104,15 +104,15 @@ export default function AdminPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-amber-500/10 via-brand-500/10 to-transparent p-6 rounded-3xl border border-amber-500/20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-brand-600/20 via-amber-500/10 to-transparent p-6 rounded-3xl border border-brand-500/30 shadow-2xl">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-dark-bg shadow-lg shadow-amber-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
             <ShieldCheck className="w-8 h-8 font-black" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black text-white">Platform Administration</h1>
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+              <h1 className="font-editorial text-2xl font-bold text-white">Platform Administration</h1>
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/40">
                 Super Admin
               </span>
             </div>
@@ -124,7 +124,7 @@ export default function AdminPage() {
 
         <button
           onClick={fetchAdminData}
-          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-dark-card border border-dark-border text-xs font-bold text-slate-200 hover:text-white hover:bg-dark-hover transition-colors self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-dark-card border border-dark-border text-xs font-bold text-slate-200 hover:text-white hover:bg-dark-hover transition-colors self-start sm:self-auto shadow-sm"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh Data</span>
@@ -134,51 +134,51 @@ export default function AdminPage() {
       {/* Metrics Row */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-3xl bg-dark-card border border-dark-border space-y-2">
+          <div className="p-5 rounded-3xl bg-dark-card border border-dark-border space-y-2 shadow-xl">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-semibold">Total Accounts</span>
               <Users className="w-4 h-4 text-brand-400" />
             </div>
-            <div className="text-2xl font-black text-white">{stats.totalUsers || 0}</div>
+            <div className="text-2xl font-black text-white font-editorial">{stats.totalUsers || 0}</div>
             <div className="flex items-center gap-2 text-[11px] text-slate-400">
-              <span className="text-pink-400 font-bold">{stats.totalCreators || 0} Creators</span>
+              <span className="text-brand-400 font-bold">{stats.totalCreators || 0} Creators</span>
               <span>•</span>
               <span>{(stats.totalUsers || 0) - (stats.totalCreators || 0)} Members</span>
             </div>
           </div>
 
-          <div className="p-5 rounded-3xl bg-dark-card border border-dark-border space-y-2">
+          <div className="p-5 rounded-3xl bg-dark-card border border-dark-border space-y-2 shadow-xl">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-semibold">Active Subscriptions</span>
-              <Award className="w-4 h-4 text-purple-400" />
+              <Award className="w-4 h-4 text-amber-400" />
             </div>
-            <div className="text-2xl font-black text-white">{stats.activeSubscriptions || 0}</div>
+            <div className="text-2xl font-black text-white font-editorial">{stats.activeSubscriptions || 0}</div>
             <p className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5" />
               <span>Recurring monthly volume</span>
             </p>
           </div>
 
-          <div className="p-5 rounded-3xl bg-dark-card border border-dark-border space-y-2">
+          <div className="p-5 rounded-3xl bg-dark-card border border-dark-border space-y-2 shadow-xl">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-semibold">Gross Volume</span>
               <DollarSign className="w-4 h-4 text-emerald-400" />
             </div>
-            <div className="text-2xl font-black text-white">
+            <div className="text-2xl font-black text-white font-editorial">
               ${Number(stats.totalGrossVolume || 0).toFixed(2)}
             </div>
             <p className="text-[11px] text-slate-400">Total transacted across subscriptions & PPV</p>
           </div>
 
-          <div className="p-5 rounded-3xl bg-dark-card border border-amber-500/20 bg-amber-500/5 space-y-2">
+          <div className="p-5 rounded-3xl bg-dark-card border border-brand-500/30 bg-brand-500/5 space-y-2 shadow-xl">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-semibold text-amber-300">Platform Earnings</span>
-              <ArrowUpRight className="w-4 h-4 text-amber-400" />
+              <span className="text-xs font-semibold text-brand-300">Platform Earnings</span>
+              <ArrowUpRight className="w-4 h-4 text-brand-400" />
             </div>
-            <div className="text-2xl font-black text-amber-400">
+            <div className="text-2xl font-black text-brand-400 font-editorial">
               ${Number(stats.totalPlatformEarnings || 0).toFixed(2)}
             </div>
-            <p className="text-[11px] text-amber-300/80">Platform commission net revenue</p>
+            <p className="text-[11px] text-brand-300/80">Platform commission net revenue</p>
           </div>
         </div>
       )}
@@ -190,14 +190,14 @@ export default function AdminPage() {
             onClick={() => setActiveTab('verifications')}
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'verifications'
-                ? 'bg-brand-600 text-white shadow-md shadow-pink-500/20'
+                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-dark-card'
             }`}
           >
             <UserCheck className="w-4 h-4" />
             <span>Creator KYC Queue</span>
             {verifications.filter((v) => v.status === 'PENDING').length > 0 && (
-              <span className="px-1.5 py-0.2 text-[10px] rounded-full bg-pink-500 text-white font-black">
+              <span className="px-1.5 py-0.2 text-[10px] rounded-full bg-brand-600 text-white font-black">
                 {verifications.filter((v) => v.status === 'PENDING').length}
               </span>
             )}
@@ -207,7 +207,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('users')}
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'users'
-                ? 'bg-brand-600 text-white shadow-md shadow-pink-500/20'
+                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-dark-card'
             }`}
           >
@@ -219,7 +219,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab('transactions')}
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'transactions'
-                ? 'bg-brand-600 text-white shadow-md shadow-pink-500/20'
+                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-dark-card'
             }`}
           >
@@ -230,8 +230,8 @@ export default function AdminPage() {
 
         {/* Tab 1: KYC Verifications */}
         {activeTab === 'verifications' && (
-          <div className="bg-dark-card border border-dark-border rounded-3xl p-6 space-y-4">
-            <h2 className="text-sm font-bold text-slate-200">Creator Identity Verification Requests</h2>
+          <div className="bg-dark-card border border-dark-border rounded-3xl p-6 space-y-4 shadow-xl">
+            <h2 className="font-editorial text-base font-bold text-slate-200">Creator Identity Verification Requests</h2>
             {verifications.length === 0 ? (
               <div className="text-center py-12 text-slate-500 text-xs">
                 No verification requests currently submitted.
@@ -269,7 +269,7 @@ export default function AdminPage() {
                             href={req.documentUrl || '#'}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-pink-400 font-bold hover:underline"
+                            className="text-brand-400 font-bold hover:underline"
                           >
                             View Document ↗
                           </a>
@@ -329,7 +329,7 @@ export default function AdminPage() {
 
         {/* Tab 2: Users */}
         {activeTab === 'users' && (
-          <div className="bg-dark-card border border-dark-border rounded-3xl p-6 space-y-4">
+          <div className="bg-dark-card border border-dark-border rounded-3xl p-6 space-y-4 shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="relative flex-1 max-w-sm">
                 <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
@@ -393,7 +393,7 @@ export default function AdminPage() {
                             👑 Admin
                           </span>
                         ) : u.role === 'CREATOR' ? (
-                          <span className="px-2 py-0.5 rounded-full bg-brand-500/20 text-pink-400 font-bold text-[10px]">
+                          <span className="px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-bold text-[10px]">
                             ✨ {u.profession || 'Creator'}
                           </span>
                         ) : (
@@ -419,8 +419,8 @@ export default function AdminPage() {
 
         {/* Tab 3: Transactions */}
         {activeTab === 'transactions' && (
-          <div className="bg-dark-card border border-dark-border rounded-3xl p-6 space-y-4">
-            <h2 className="text-sm font-bold text-slate-200">Recent Platform Transactions</h2>
+          <div className="bg-dark-card border border-dark-border rounded-3xl p-6 space-y-4 shadow-xl">
+            <h2 className="font-editorial text-base font-bold text-slate-200">Recent Platform Transactions</h2>
             {transactions.length === 0 ? (
               <div className="text-center py-12 text-slate-500 text-xs">No transactions recorded yet.</div>
             ) : (

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
-import { Lock, Mail, ArrowRight, ShieldCheck, Sparkles, UserCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight, ShieldCheck, Sparkles, UserCheck, Flame } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -55,14 +55,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center p-4 py-8">
-      <div className="w-full max-w-md bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/60 space-y-6">
+      <div className="w-full max-w-md bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center text-white font-extrabold text-2xl mx-auto shadow-lg shadow-pink-500/25">
-            S
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-2xl mx-auto shadow-lg shadow-brand-500/25">
+            <Flame className="w-6 h-6 fill-white" />
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight">Welcome Back</h2>
-          <p className="text-xs text-slate-400">Log in to support creators or manage your platform</p>
+          <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-white tracking-tight">Welcome Back</h2>
+          <p className="text-xs text-slate-400">Log in to support creators or manage your VIP club</p>
         </div>
 
         {/* 1-Click Demo Accounts Quick Selector */}
@@ -85,9 +85,9 @@ export default function LoginPage() {
               type="button"
               disabled={loading}
               onClick={() => fillAndLogin('elena@sponzy.com', 'password123')}
-              className="p-2 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-pink-400 text-center transition-all group flex flex-col items-center gap-1"
+              className="p-2 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-brand-400 text-center transition-all group flex flex-col items-center gap-1"
             >
-              <Sparkles className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
+              <Sparkles className="w-4 h-4 text-brand-400 group-hover:scale-110 transition-transform" />
               <span className="text-[11px] font-bold">Creator</span>
             </button>
 
@@ -119,7 +119,7 @@ export default function LoginPage() {
                 value={emailOrUsername}
                 onChange={(e) => setEmailOrUsername(e.target.value)}
                 placeholder="admin@sponzy.com"
-                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500"
+                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 required
               />
             </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500"
+                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
                 required
               />
             </div>
@@ -146,7 +146,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-brand-600 to-pink-500 hover:from-brand-500 text-white font-bold py-3 rounded-2xl shadow-lg shadow-pink-500/25 transition-all flex items-center justify-center gap-2 text-sm"
+            className="w-full bg-gradient-to-r from-brand-600 to-amber-500 hover:from-brand-500 text-white font-bold py-3 rounded-2xl shadow-lg shadow-brand-500/25 transition-all flex items-center justify-center gap-2 text-xs"
           >
             <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
             <ArrowRight className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function LoginPage() {
 
         <div className="pt-2 text-center text-xs text-slate-400">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-pink-400 font-bold hover:underline">
+          <Link href="/register" className="text-brand-400 font-bold hover:underline">
             Sign up now
           </Link>
         </div>

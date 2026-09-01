@@ -1,174 +1,175 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import { Search, CheckCircle2, Sparkles, Users, Image as ImageIcon } from 'lucide-react';
+import { Search, Sparkles, CheckCircle2, Flame, MapPin, DollarSign, Filter } from 'lucide-react';
 
 export default function ExplorePage() {
   const [creators, setCreators] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   useEffect(() => {
     const fetchCreators = async () => {
+      setLoading(true);
       try {
         const res = await api.get('/users/explore');
-        if (res.data?.creators) {
-          setCreators(res.data.creators);
+        if (res.data?.success) {
+          setCreators(res.data.creators || []);
         }
-      } catch {
-        // Fallback demo creators
-        setCreators([
-          {
-            id: '1',
-            name: 'Elena Ray',
-            username: 'elenaray',
-            profession: 'Fashion & Visual Model',
-            bio: 'Exclusive high-definition galleries, weekly behind the scenes, and direct chat! ✨',
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80',
-            cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
-            isVerified: true,
-            creatorMonthlyPrice: 9.99,
-            _count: { posts: 148, subscriptionsReceived: 1250 },
-          },
-          {
-            id: '2',
-            name: 'Alex Rivera',
-            username: 'alexrivera',
-            profession: 'Fitness Coach & Athlete',
-            bio: 'Transform your body with my custom workout programs, daily meal plans & live coaching.',
-            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80',
-            cover: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80',
-            isVerified: true,
-            creatorMonthlyPrice: 14.99,
-            _count: { posts: 84, subscriptionsReceived: 890 },
-          },
-          {
-            id: '3',
-            name: 'Maya Lin',
-            username: 'mayalin',
-            profession: 'Digital Illustrator & Anime',
-            bio: 'Drawing tutorials, layered PSD files, wallpapers, and monthly art pack downloads.',
-            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80',
-            cover: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=80',
-            isVerified: true,
-            creatorMonthlyPrice: 4.99,
-            _count: { posts: 210, subscriptionsReceived: 3400 },
-          },
-        ]);
+      } catch (err) {
+        console.error('Failed to load explore creators:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCreators();
   }, []);
 
-  const filtered = creators.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.username.toLowerCase().includes(search.toLowerCase()) ||
-    (c.profession && c.profession.toLowerCase().includes(search.toLowerCase()))
-  );
+  const categories = ['ALL', 'Fitness', 'Fashion', 'Art & Photography', 'Musician', 'Cosplay', 'Gaming'];
+
+  const filteredCreators = creators.filter((c) => {
+    const matchesSearch =
+      c.name?.toLowerCase().includes(search.toLowerCase()) ||
+      c.username?.toLowerCase().includes(search.toLowerCase()) ||
+      c.profession?.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'ALL' ||
+      c.profession?.toLowerCase().includes(selectedCategory.toLowerCase());
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="p-4 lg:p-8 max-w-6xl mx-auto space-y-8">
-      {/* Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-purple-900/60 via-brand-900/40 to-pink-900/60 border border-brand-500/20 p-8 sm:p-12 text-center">
-        <div className="max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 text-pink-300 font-semibold text-xs border border-brand-500/30">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Discover Top Creators</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Explore Trending Talents
-          </h1>
-          <p className="text-sm sm:text-base text-slate-300">
-            Subscribe to favorite artists, fitness coaches, models, musicians, and creators from around the world.
-          </p>
+    <div className="max-w-6xl mx-auto space-y-8 pb-16">
+      {/* Header */}
+      <div className="text-center space-y-3 max-w-xl mx-auto pt-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/25 text-brand-400 text-xs font-bold">
+          <Flame className="w-3.5 h-3.5 fill-brand-500" />
+          <span>VIP Discover</span>
+        </div>
+        <h1 className="font-editorial text-3xl sm:text-4xl font-black text-white tracking-tight">
+          Explore Elite Creators
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-400">
+          Find your next favorite creator, unlock exclusive photosets, and join VIP member clubs.
+        </p>
 
-          {/* Search box */}
-          <div className="relative max-w-md mx-auto pt-2">
-            <Search className="absolute left-4 top-5 w-5 h-5 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, skill, username..."
-              className="w-full bg-dark-bg/90 border border-dark-border rounded-full pl-12 pr-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 shadow-xl"
-            />
-          </div>
+        {/* Search Bar */}
+        <div className="relative pt-2">
+          <Search className="absolute left-4 top-5 w-4 h-4 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Search by name, @username, or specialty..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-dark-card border border-dark-border rounded-full pl-11 pr-4 py-3 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 shadow-xl transition-all"
+          />
         </div>
       </div>
 
-      {/* Creators Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((creator) => (
-          <div
-            key={creator.id}
-            className="bg-dark-card border border-dark-border rounded-3xl overflow-hidden shadow-xl hover:border-slate-700 transition-all flex flex-col group"
+      {/* Category Pills */}
+      <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
+              selectedCategory === cat
+                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/25'
+                : 'bg-dark-card border border-dark-border text-slate-400 hover:text-white hover:bg-dark-hover'
+            }`}
           >
-            {/* Header Cover */}
-            <div className="h-28 w-full bg-slate-800 relative overflow-hidden">
-              <img
-                src={creator.cover || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80'}
-                alt="Cover"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
+            {cat}
+          </button>
+        ))}
+      </div>
 
-            {/* Avatar & Content */}
-            <div className="px-5 pb-5 pt-0 flex-1 flex flex-col justify-between relative">
-              <div className="-mt-12 mb-3 flex items-end justify-between">
-                <div className="w-20 h-20 rounded-full border-4 border-dark-card overflow-hidden bg-dark-bg shadow-lg">
-                  <img
-                    src={creator.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}
-                    alt={creator.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-slate-400 block font-medium">Subscription</span>
-                  <span className="text-base font-extrabold text-emerald-400">
-                    {creator.freeSubscription || Number(creator.creatorMonthlyPrice) === 0
-                      ? 'Free'
-                      : `$${Number(creator.creatorMonthlyPrice).toFixed(2)}/mo`}
-                  </span>
-                </div>
-              </div>
-
+      {/* Creators Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-80 bg-dark-card border border-dark-border rounded-3xl animate-pulse" />
+          ))}
+        </div>
+      ) : filteredCreators.length === 0 ? (
+        <div className="bg-dark-card border border-dark-border rounded-3xl p-12 text-center text-slate-500 text-xs">
+          No creators found matching &quot;{search}&quot;.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCreators.map((creator) => (
+            <div
+              key={creator.id}
+              className="bg-dark-card border border-dark-border rounded-3xl overflow-hidden shadow-2xl hover:border-brand-500/40 transition-all duration-300 flex flex-col justify-between group"
+            >
               <div>
-                <div className="flex items-center gap-1.5 font-bold text-white text-base">
-                  <span>{creator.name}</span>
-                  {creator.isVerified && <CheckCircle2 className="w-4 h-4 text-brand-500" />}
+                {/* Cover Banner */}
+                <div className="h-32 w-full bg-slate-800 relative overflow-hidden">
+                  <img
+                    src={creator.cover || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80'}
+                    alt={creator.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark-card via-transparent to-black/30" />
                 </div>
-                <p className="text-xs text-slate-400 mb-2">@{creator.username}</p>
-                {creator.bio && (
-                  <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed mb-4">
-                    {creator.bio}
+
+                {/* Avatar & Info */}
+                <div className="px-5 pb-4 relative -mt-12 space-y-3">
+                  <div className="flex items-end justify-between">
+                    <div className="w-20 h-20 rounded-full border-4 border-dark-card overflow-hidden bg-dark-bg shadow-xl ring-2 ring-brand-500/40">
+                      <img
+                        src={creator.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}
+                        alt={creator.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="text-right">
+                      <span className="text-xs font-bold text-brand-400">
+                        ${Number(creator.creatorMonthlyPrice || 10).toFixed(0)}/mo
+                      </span>
+                      <p className="text-[10px] text-slate-500 font-semibold">{creator._count?.posts || 0} Posts</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-editorial text-base font-bold text-white group-hover:text-brand-400 transition-colors">
+                        {creator.name}
+                      </h3>
+                      {creator.isVerified && (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-brand-500 fill-brand-500 text-white" />
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-400 font-medium">@{creator.username}</p>
+                    {creator.profession && (
+                      <span className="inline-block mt-1 text-[11px] font-bold text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded-full border border-brand-500/20">
+                        {creator.profession}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                    {creator.bio || 'Exclusive weekly sets, behind-the-scenes, and 1-on-1 private messaging.'}
                   </p>
-                )}
+                </div>
               </div>
 
-              <div className="pt-3 border-t border-dark-border flex items-center justify-between">
-                <div className="flex items-center gap-3 text-xs text-slate-400">
-                  <span className="flex items-center gap-1">
-                    <ImageIcon className="w-3.5 h-3.5" />
-                    {creator._count?.posts || 0}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5" />
-                    {creator._count?.subscriptionsReceived || 0}
-                  </span>
-                </div>
-
+              {/* Action Button */}
+              <div className="p-5 pt-0">
                 <Link
                   href={`/${creator.username}`}
-                  className="bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow-md shadow-pink-500/20 transition-all"
+                  className="block w-full py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold text-center shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.01]"
                 >
-                  View Profile
+                  View Profile & Plans
                 </Link>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

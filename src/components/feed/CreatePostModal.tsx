@@ -4,7 +4,15 @@ import React, { useState } from 'react';
 import { X, Image as ImageIcon, Lock, DollarSign, Globe, Users } from 'lucide-react';
 import { api } from '@/lib/api';
 
-export const CreatePostModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+export const CreatePostModal = ({
+  isOpen,
+  onClose,
+  onPostCreated,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onPostCreated?: () => void;
+}) => {
   const [description, setDescription] = useState('');
   const [lockType, setLockType] = useState<'FREE' | 'SUBSCRIBERS_ONLY' | 'PAY_PER_VIEW'>('FREE');
   const [price, setPrice] = useState('');
@@ -23,7 +31,11 @@ export const CreatePostModal = ({ isOpen, onClose }: { isOpen: boolean; onClose:
         price: lockType === 'PAY_PER_VIEW' ? price : 0,
         media: mediaUrl ? [{ url: mediaUrl, type: 'IMAGE' }] : [],
       });
-      window.location.reload();
+      if (onPostCreated) {
+        onPostCreated();
+      } else {
+        window.location.reload();
+      }
     } catch (err: any) {
       alert(err.response?.data?.error || 'Failed to create post');
     } finally {
@@ -135,7 +147,7 @@ export const CreatePostModal = ({ isOpen, onClose }: { isOpen: boolean; onClose:
             <button
               type="submit"
               disabled={loading}
-              className="bg-gradient-to-r from-brand-600 to-pink-500 hover:from-brand-500 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-pink-500/25 transition-all"
+              className="bg-gradient-to-r from-brand-600 to-amber-500 hover:from-brand-500 text-white px-6 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-brand-500/25 transition-all"
             >
               {loading ? 'Publishing...' : 'Publish Post'}
             </button>
