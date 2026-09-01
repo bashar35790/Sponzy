@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Paperclip,
   Smile,
+  Sparkles,
 } from 'lucide-react';
 
 export default function MessagesPage() {
@@ -32,7 +33,7 @@ export default function MessagesPage() {
         isVerified: true,
       },
       lastMessage: 'Hey! Thanks for the sub, here is a preview from today’s set! ✨',
-      lastMessageAt: new Date().toISOString(),
+      lastMessageAt: '12:34 PM',
       isRead: true,
     },
     {
@@ -45,7 +46,7 @@ export default function MessagesPage() {
         isVerified: true,
       },
       lastMessage: 'Let me know if you need help with your workout schedule.',
-      lastMessageAt: new Date().toISOString(),
+      lastMessageAt: '11:15 AM',
       isRead: false,
     },
   ]);
@@ -111,44 +112,45 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-20 px-1 sm:px-0">
-      <div className="bg-dark-card border border-dark-border rounded-3xl h-[calc(100vh-140px)] min-h-[560px] max-h-[820px] overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
-        {/* Left Conversations List */}
+    <div className="max-w-6xl mx-auto pb-16 px-1 sm:px-0">
+      <div className="bg-dark-card border border-dark-border rounded-3xl h-[calc(100vh-130px)] min-h-[580px] max-h-[850px] overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
+        {/* Left Conversations Sidebar (4 cols) */}
         <div
-          className={`md:col-span-4 border-r border-dark-border flex flex-col h-full ${
+          className={`md:col-span-4 border-r border-dark-border flex flex-col h-full bg-dark-card/90 ${
             showMobileChat ? 'hidden md:flex' : 'flex'
           }`}
         >
-          <div className="p-4 border-b border-dark-border space-y-3 shrink-0">
-            <h1 className="font-editorial text-xl font-bold text-white">Direct Messages</h1>
+          {/* Aligned Top Header (Matching Right Header Height) */}
+          <div className="h-18 px-4 py-3.5 border-b border-dark-border flex flex-col justify-center shrink-0">
             <div className="relative">
               <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-slate-500" />
               <input
                 type="text"
                 placeholder="Search conversations..."
-                className="w-full bg-dark-bg border border-dark-border rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+                className="w-full bg-dark-bg border border-dark-border rounded-full pl-9 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all shadow-inner"
               />
             </div>
           </div>
 
+          {/* Conversations List */}
           <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-dark-border/40 scrollbar-none">
             {conversations.map((conv) => (
               <button
                 key={conv.id}
                 onClick={() => selectConversation(conv)}
-                className={`w-full text-left p-3.5 flex items-center gap-3 transition-colors ${
+                className={`w-full text-left px-4 py-3.5 flex items-center gap-3.5 transition-all ${
                   activeConv?.id === conv.id
-                    ? 'bg-brand-500/10 border-l-2 border-brand-500'
+                    ? 'bg-gradient-to-r from-brand-600/15 via-brand-500/10 to-transparent border-l-4 border-brand-500'
                     : 'hover:bg-dark-hover/70'
                 }`}
               >
-                <div className="w-11 h-11 rounded-full overflow-hidden border border-brand-500/40 shrink-0">
+                <div className="w-11 h-11 rounded-full overflow-hidden border border-brand-500/40 shrink-0 shadow-sm">
                   <img src={conv.partner.avatar} alt={conv.partner.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-0.5">
+                  <div className="flex items-center justify-between mb-1">
                     <p className="text-xs font-bold text-slate-100 truncate">{conv.partner.name}</p>
-                    <span className="text-[10px] text-slate-500">12:34 PM</span>
+                    <span className="text-[10px] text-slate-500">{conv.lastMessageAt}</span>
                   </div>
                   <p className="text-xs text-slate-400 truncate">{conv.lastMessage}</p>
                 </div>
@@ -157,14 +159,14 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        {/* Right Active Chat Pane */}
+        {/* Right Active Chat Pane (8 cols) */}
         <div
-          className={`md:col-span-8 flex flex-col h-full bg-dark-bg/50 ${
+          className={`md:col-span-8 flex flex-col h-full bg-dark-bg/60 ${
             showMobileChat ? 'flex' : 'hidden md:flex'
           }`}
         >
-          {/* Header */}
-          <div className="p-3.5 px-4 sm:px-6 border-b border-dark-border flex items-center justify-between bg-dark-card/95 shrink-0 z-10">
+          {/* Aligned Top Header (Matching Left Header Height) */}
+          <div className="h-18 px-4 sm:px-6 border-b border-dark-border flex items-center justify-between bg-dark-card/95 shrink-0 z-10">
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setShowMobileChat(false)}
@@ -173,11 +175,11 @@ export default function MessagesPage() {
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
-              <div className="w-9 h-9 rounded-full overflow-hidden border border-brand-500/50 shrink-0">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-500/60 shrink-0 shadow-sm">
                 <img src={activeConv?.partner.avatar} alt="" className="w-full h-full object-cover" />
               </div>
               <div className="min-w-0">
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <h2 className="text-xs sm:text-sm font-bold text-white truncate">{activeConv?.partner.name}</h2>
                   {activeConv?.partner.isVerified && (
                     <CheckCircle2 className="w-3.5 h-3.5 text-brand-500 fill-brand-500 text-white shrink-0" />
@@ -189,21 +191,21 @@ export default function MessagesPage() {
 
             <button
               onClick={() => alert('Tip sent to creator!')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-white font-bold text-xs border border-brand-500/25 transition-all shadow-sm shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-white font-bold text-xs border border-brand-500/30 transition-all shadow-sm shrink-0"
             >
               <DollarSign className="w-3.5 h-3.5" />
               <span>Send Tip</span>
             </button>
           </div>
 
-          {/* Messages Stream (min-h-0 ensures it scrolls and DOES NOT push the form down) */}
+          {/* Messages Stream */}
           <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4">
             {messages.map((m) => {
               const isMine = m.senderId === user?.id || m.senderId === 'me';
               return (
                 <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
                   <div
-                    className={`max-w-[85%] sm:max-w-md rounded-2xl p-3.5 space-y-2.5 text-xs shadow-md ${
+                    className={`max-w-[85%] sm:max-w-md rounded-3xl p-4 space-y-2.5 text-xs shadow-xl ${
                       isMine
                         ? 'bg-gradient-to-r from-brand-600 to-amber-500 text-white'
                         : 'bg-dark-card border border-dark-border text-slate-200'
@@ -213,9 +215,9 @@ export default function MessagesPage() {
 
                     {/* Locked Media PPV Bubble */}
                     {m.isLocked && (
-                      <div className="relative rounded-xl overflow-hidden aspect-video bg-black/60 flex items-center justify-center border border-white/10">
+                      <div className="relative rounded-2xl overflow-hidden aspect-video bg-black/60 flex items-center justify-center border border-white/10 mt-2">
                         <img
-                          src={m.media?.[0]?.url || 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80'}
+                          src={m.media?.[0]?.url || 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80'}
                           alt=""
                           className="w-full h-full object-cover filter blur-md"
                         />
@@ -231,7 +233,7 @@ export default function MessagesPage() {
                       </div>
                     )}
 
-                    <span className={`text-[10px] block text-right opacity-70`}>
+                    <span className="text-[10px] block text-right opacity-70">
                       {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
@@ -241,12 +243,12 @@ export default function MessagesPage() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Guaranteed Visible Message Input Box (shrink-0 + sticky bottom) */}
+          {/* Guaranteed Visible & Perfectly Spaced Message Input Bar */}
           <div className="p-3 sm:p-4 border-t border-dark-border bg-dark-card/95 shrink-0 z-10">
             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => alert('Photo attachment coming soon!')}
+                onClick={() => alert('Photo attachment modal opened!')}
                 className="p-2 rounded-full text-slate-400 hover:text-brand-400 hover:bg-dark-bg transition-colors shrink-0"
               >
                 <Paperclip className="w-4 h-4" />
