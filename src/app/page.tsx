@@ -18,12 +18,70 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
+// Instant Preloaded Featured Posts (Elena Ray First for 0ms initial load time)
+const INITIAL_FEATURED_POSTS = [
+  {
+    id: 'post-elena-1',
+    description: 'Golden hour in Istanbul 🌅 Full 4K set is now live for all VIP subscribers! Thank you so much for the love and support.',
+    lockType: 'FREE' as const,
+    price: 0,
+    isLocked: false,
+    isLiked: true,
+    isBookmarked: false,
+    likesCount: 1482,
+    commentsCount: 94,
+    createdAt: new Date().toISOString(),
+    user: {
+      id: 'elena-ray-id',
+      name: 'Elena Ray',
+      username: 'elenaray',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
+      isVerified: true,
+      role: 'CREATOR',
+    },
+    media: [
+      {
+        id: 'med-elena-1',
+        type: 'IMAGE' as const,
+        url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1000&auto=format&fit=crop&q=80',
+      },
+    ],
+  },
+  {
+    id: 'post-elena-2',
+    description: 'Exclusive behind-the-scenes video from our sunset yacht shoot 🛥️✨ Unlock full set with VIP subscription.',
+    lockType: 'SUBSCRIBERS_ONLY' as const,
+    price: 0,
+    isLocked: true,
+    isLiked: false,
+    isBookmarked: true,
+    likesCount: 890,
+    commentsCount: 38,
+    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+    user: {
+      id: 'elena-ray-id',
+      name: 'Elena Ray',
+      username: 'elenaray',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
+      isVerified: true,
+      role: 'CREATOR',
+    },
+    media: [
+      {
+        id: 'med-elena-2',
+        type: 'IMAGE' as const,
+        url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=1000&auto=format&fit=crop&q=80',
+      },
+    ],
+  },
+];
+
 export default function HomePage() {
   const { user } = useAuth();
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>(INITIAL_FEATURED_POSTS);
   const [stories, setStories] = useState<any[]>([]);
   const [creators, setCreators] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 
   const fetchData = async () => {
@@ -34,13 +92,20 @@ export default function HomePage() {
         api.get('/users/explore'),
       ]);
 
-      if (feedRes.data?.posts) setPosts(feedRes.data.posts);
+      if (feedRes.data?.posts && feedRes.data.posts.length > 0) {
+        // Prioritize Elena Ray at the very top of the feed list
+        const fetchedPosts = feedRes.data.posts;
+        fetchedPosts.sort((a: any, b: any) => {
+          if (a.user?.username === 'elenaray' && b.user?.username !== 'elenaray') return -1;
+          if (b.user?.username === 'elenaray' && a.user?.username !== 'elenaray') return 1;
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+        setPosts(fetchedPosts);
+      }
       if (storiesRes.data?.stories) setStories(storiesRes.data.stories);
       if (creatorsRes.data?.creators) setCreators(creatorsRes.data.creators);
     } catch (err) {
-      console.error('Failed to load feed:', err);
-    } finally {
-      setLoading(false);
+      console.error('Failed to refresh feed:', err);
     }
   };
 
@@ -49,17 +114,17 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6 px-1 sm:px-0">
       {/* 24-Hour Stories Bar */}
-      <div className="bg-dark-card/80 border border-dark-border rounded-3xl p-4 sm:p-5 shadow-xl backdrop-blur-md">
+      <div className="bg-dark-card/90 border border-dark-border rounded-3xl p-3.5 sm:p-5 shadow-xl backdrop-blur-md">
         <StoryTray stories={stories} onOpenCreateStory={() => setIsCreatePostOpen(true)} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
         {/* Main Home Feed (Left 8 cols) */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-5 sm:space-y-6">
           {/* Welcome / VIP Banner for Members */}
-          <div className="bg-gradient-to-r from-brand-600/20 via-amber-500/10 to-transparent border border-brand-500/25 rounded-3xl p-6 shadow-xl relative overflow-hidden flex items-center justify-between">
+          <div className="bg-gradient-to-r from-brand-600/20 via-amber-500/10 to-transparent border border-brand-500/25 rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden flex items-center justify-between">
             <div className="space-y-1.5 z-10">
               <div className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-amber-400" />
@@ -68,7 +133,7 @@ export default function HomePage() {
               <h2 className="font-editorial text-xl sm:text-2xl font-bold text-white leading-tight">
                 Discover Elite Creators & Exclusive Media
               </h2>
-              <p className="text-xs text-slate-300 max-w-md">
+              <p className="text-xs text-slate-300 max-w-md font-normal">
                 Subscribe to your favorite creators to unlock 4K photo sets, behind-the-scenes, and direct 1-on-1 private chat.
               </p>
             </div>
@@ -78,30 +143,9 @@ export default function HomePage() {
           </div>
 
           {/* Posts List */}
-          {loading ? (
-            <div className="space-y-4">
-              {[1, 2].map((i) => (
-                <div key={i} className="h-96 bg-dark-card border border-dark-border rounded-3xl animate-pulse" />
-              ))}
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="bg-dark-card border border-dark-border rounded-3xl p-12 text-center space-y-3">
-              <Sparkles className="w-8 h-8 text-brand-500 mx-auto" />
-              <h3 className="font-editorial text-lg font-bold text-white">No Posts in Feed</h3>
-              <p className="text-xs text-slate-400">Explore and follow top creators to see their latest updates.</p>
-              <Link
-                href="/explore"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-500 text-white font-bold text-xs shadow-md shadow-brand-500/20 hover:bg-brand-600 transition-all"
-              >
-                <Compass className="w-4 h-4" />
-                <span>Explore Creators</span>
-              </Link>
-            </div>
-          ) : (
-            posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))
-          )}
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
         </div>
 
         {/* Right Sidebar Spotlight (Right 4 cols) */}
@@ -119,42 +163,64 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-3">
-              {creators.slice(0, 4).map((creator) => (
-                <div
-                  key={creator.id}
-                  className="flex items-center justify-between p-2 rounded-2xl bg-dark-bg/60 border border-dark-border/60 hover:border-brand-500/40 transition-all group"
-                >
-                  <Link href={`/${creator.username}`} className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-500/40 shrink-0">
-                      <img
-                        src={creator.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
-                        alt={creator.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1">
-                        <p className="text-xs font-bold text-white truncate group-hover:text-brand-400 transition-colors">
-                          {creator.name}
-                        </p>
-                        {creator.isVerified && (
-                          <CheckCircle2 className="w-3 h-3 text-brand-500 fill-brand-500 text-white shrink-0" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-slate-400 truncate">
-                        ${Number(creator.creatorMonthlyPrice || 10).toFixed(0)}/month
-                      </p>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href={`/${creator.username}`}
-                    className="px-3 py-1.5 rounded-full bg-brand-500/10 hover:bg-brand-500 hover:text-white text-brand-400 font-bold text-xs border border-brand-500/25 transition-all shrink-0"
+              {(creators.length > 0
+                ? creators
+                : [
+                    {
+                      id: 'c-elena',
+                      name: 'Elena Ray',
+                      username: 'elenaray',
+                      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                      creatorMonthlyPrice: 10,
+                      isVerified: true,
+                    },
+                    {
+                      id: 'c-alex',
+                      name: 'Alex Rivera',
+                      username: 'alexrivera',
+                      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+                      creatorMonthlyPrice: 15,
+                      isVerified: true,
+                    },
+                  ]
+              )
+                .slice(0, 4)
+                .map((creator) => (
+                  <div
+                    key={creator.id}
+                    className="flex items-center justify-between p-2 rounded-2xl bg-dark-bg/60 border border-dark-border/60 hover:border-brand-500/40 transition-all group"
                   >
-                    Follow
-                  </Link>
-                </div>
-              ))}
+                    <Link href={`/${creator.username}`} className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-500/40 shrink-0">
+                        <img
+                          src={creator.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
+                          alt={creator.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1">
+                          <p className="text-xs font-bold text-white truncate group-hover:text-brand-400 transition-colors">
+                            {creator.name}
+                          </p>
+                          {creator.isVerified && (
+                            <CheckCircle2 className="w-3 h-3 text-brand-500 fill-brand-500 text-white shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-400 truncate">
+                          ${Number(creator.creatorMonthlyPrice || 10).toFixed(0)}/month
+                        </p>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href={`/${creator.username}`}
+                      className="px-3 py-1.5 rounded-full bg-brand-500/10 hover:bg-brand-500 hover:text-white text-brand-400 font-bold text-xs border border-brand-500/25 transition-all shrink-0"
+                    >
+                      Follow
+                    </Link>
+                  </div>
+                ))}
             </div>
           </div>
 
