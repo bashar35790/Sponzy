@@ -3,7 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Send, Image as ImageIcon, DollarSign, Lock, Search, CheckCircle2 } from 'lucide-react';
+import {
+  Send,
+  Image as ImageIcon,
+  DollarSign,
+  Lock,
+  Search,
+  CheckCircle2,
+  ChevronLeft,
+  Flame,
+  ShieldCheck,
+} from 'lucide-react';
 
 export default function MessagesPage() {
   const { user } = useAuth();
@@ -37,6 +47,7 @@ export default function MessagesPage() {
   ]);
 
   const [activeConv, setActiveConv] = useState<any>(conversations[0]);
+  const [showMobileChat, setShowMobileChat] = useState(false);
   const [messages, setMessages] = useState<any[]>([
     {
       id: 'm1',
@@ -63,155 +74,177 @@ export default function MessagesPage() {
     },
   ]);
 
-  const [text, setText] = useState('');
+  const [inputMsg, setInputMsg] = useState('');
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!inputMsg.trim()) return;
 
     const newMsg = {
       id: Date.now().toString(),
       senderId: user?.id || 'me',
-      body: text.trim(),
+      body: inputMsg.trim(),
       price: 0,
       isLocked: false,
       createdAt: new Date().toISOString(),
     };
 
     setMessages([...messages, newMsg]);
-    setText('');
+    setInputMsg('');
+  };
+
+  const selectConversation = (conv: any) => {
+    setActiveConv(conv);
+    setShowMobileChat(true);
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-6xl mx-auto h-[calc(100vh-80px)] flex gap-4">
-      {/* Conversations List */}
-      <div className="w-full sm:w-80 shrink-0 bg-dark-card border border-dark-border rounded-3xl overflow-hidden flex flex-col shadow-xl">
-        <div className="p-4 border-b border-dark-border">
-          <h2 className="font-bold text-white text-lg mb-3">Messages</h2>
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search conversations..."
-              className="w-full bg-dark-bg border border-dark-border rounded-full pl-9 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-            />
+    <div className="max-w-6xl mx-auto pb-16 h-[80vh]">
+      <div className="bg-dark-card border border-dark-border rounded-3xl h-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
+        {/* Left Conversations List */}
+        <div
+          className={`md:col-span-4 border-r border-dark-border flex flex-col h-full ${
+            showMobileChat ? 'hidden md:flex' : 'flex'
+          }`}
+        >
+          <div className="p-4 border-b border-dark-border space-y-3">
+            <h1 className="font-editorial text-xl font-bold text-white">Direct Messages</h1>
+            <div className="relative">
+              <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Search conversations..."
+                className="w-full bg-dark-bg border border-dark-border rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto divide-y divide-dark-border/40 scrollbar-none">
+            {conversations.map((conv) => (
+              <button
+                key={conv.id}
+                onClick={() => selectConversation(conv)}
+                className={`w-full text-left p-3.5 flex items-center gap-3 transition-colors ${
+                  activeConv?.id === conv.id
+                    ? 'bg-brand-500/10 border-l-2 border-brand-500'
+                    : 'hover:bg-dark-hover/70'
+                }`}
+              >
+                <div className="w-11 h-11 rounded-full overflow-hidden border border-brand-500/40 shrink-0">
+                  <img src={conv.partner.avatar} alt={conv.partner.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <p className="text-xs font-bold text-slate-100 truncate">{conv.partner.name}</p>
+                    <span className="text-[10px] text-slate-500">12:34 PM</span>
+                  </div>
+                  <p className="text-xs text-slate-400 truncate">{conv.lastMessage}</p>
+                </div>
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-dark-border/50">
-          {conversations.map((conv) => (
-            <div
-              key={conv.id}
-              onClick={() => setActiveConv(conv)}
-              className={`p-4 flex items-center gap-3 cursor-pointer hover:bg-dark-hover transition-colors ${
-                activeConv?.id === conv.id ? 'bg-brand-500/10 border-l-4 border-brand-500' : ''
-              }`}
-            >
-              <img
-                src={conv.partner.avatar}
-                alt={conv.partner.name}
-                className="w-12 h-12 rounded-full object-cover shrink-0"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 font-bold text-white text-sm truncate">
-                    <span>{conv.partner.name}</span>
-                    {conv.partner.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-brand-500" />}
-                  </div>
+        {/* Right Active Chat Pane */}
+        <div
+          className={`md:col-span-8 flex flex-col h-full bg-dark-bg/40 ${
+            showMobileChat ? 'flex' : 'hidden md:flex'
+          }`}
+        >
+          {/* Header */}
+          <div className="p-3.5 px-4 sm:px-6 border-b border-dark-border flex items-center justify-between bg-dark-card/90">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowMobileChat(false)}
+                className="md:hidden p-1.5 rounded-full hover:bg-dark-hover text-slate-400 hover:text-white"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              <div className="w-9 h-9 rounded-full overflow-hidden border border-brand-500/50">
+                <img src={activeConv?.partner.avatar} alt="" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1">
+                  <h2 className="text-xs sm:text-sm font-bold text-white">{activeConv?.partner.name}</h2>
+                  {activeConv?.partner.isVerified && (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-500 fill-brand-500 text-white" />
+                  )}
                 </div>
-                <p className="text-xs text-slate-400 truncate mt-0.5">{conv.lastMessage}</p>
+                <p className="text-[11px] text-slate-400">@{activeConv?.partner.username}</p>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Chat Conversation Box */}
-      <div className="hidden sm:flex flex-1 bg-dark-card border border-dark-border rounded-3xl overflow-hidden flex-col shadow-xl">
-        {/* Chat Header */}
-        <div className="p-4 border-b border-dark-border flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              src={activeConv.partner.avatar}
-              alt={activeConv.partner.name}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <h3 className="font-bold text-white text-sm flex items-center gap-1">
-                <span>{activeConv.partner.name}</span>
-                {activeConv.partner.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-brand-500" />}
-              </h3>
-              <p className="text-xs text-emerald-400 font-medium">Online now</p>
-            </div>
+            <button
+              onClick={() => alert('Tip modal opened!')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-white font-bold text-xs border border-brand-500/25 transition-all shadow-sm"
+            >
+              <DollarSign className="w-3.5 h-3.5" />
+              <span>Send Tip</span>
+            </button>
           </div>
 
-          <button className="flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-500/20">
-            <DollarSign className="w-3.5 h-3.5" />
-            <span>Send Tip</span>
-          </button>
-        </div>
+          {/* Messages Stream */}
+          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+            {messages.map((m) => {
+              const isMine = m.senderId === user?.id || m.senderId === 'me';
+              return (
+                <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className={`max-w-xs sm:max-w-md rounded-2xl p-3.5 space-y-2.5 text-xs shadow-md ${
+                      isMine
+                        ? 'bg-gradient-to-r from-brand-600 to-amber-500 text-white'
+                        : 'bg-dark-card border border-dark-border text-slate-200'
+                    }`}
+                  >
+                    <p className="leading-relaxed">{m.body}</p>
 
-        {/* Messages Stream */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4">
-          {messages.map((m) => {
-            const isMe = m.senderId === user?.id || m.senderId === 'me';
-            return (
-              <div key={m.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`max-w-sm rounded-3xl p-4 shadow-lg ${
-                    isMe
-                      ? 'bg-gradient-to-r from-brand-600 to-pink-600 text-white rounded-br-none'
-                      : 'bg-dark-bg border border-dark-border text-slate-200 rounded-bl-none'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed">{m.body}</p>
-
-                  {/* PPV Media Attachment */}
-                  {m.media && (
-                    <div className="mt-3 relative rounded-2xl overflow-hidden aspect-[4/3] bg-black/50 flex items-center justify-center">
-                      <img
-                        src={m.media[0].url}
-                        alt="Media"
-                        className="w-full h-full object-cover blur-xl opacity-40"
-                      />
-                      {m.isLocked && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-black/40">
-                          <Lock className="w-6 h-6 text-pink-400 mb-2" />
-                          <button className="bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow-lg">
+                    {/* Locked Media PPV Bubble */}
+                    {m.isLocked && (
+                      <div className="relative rounded-xl overflow-hidden aspect-video bg-black/60 flex items-center justify-center border border-white/10">
+                        <img
+                          src={m.media?.[0]?.url || 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80'}
+                          alt=""
+                          className="w-full h-full object-cover filter blur-md"
+                        />
+                        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-3 text-center space-y-2">
+                          <Lock className="w-5 h-5 text-brand-400" />
+                          <button
+                            onClick={() => alert(`Unlocked for $${m.price}`)}
+                            className="px-4 py-1.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-[11px] shadow-lg shadow-brand-500/30 transition-all"
+                          >
                             Unlock for ${Number(m.price).toFixed(2)}
                           </button>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                      </div>
+                    )}
 
-        {/* Input Bar */}
-        <form onSubmit={handleSendMessage} className="p-3 border-t border-dark-border flex items-center gap-2">
-          <button type="button" className="p-2 rounded-full text-slate-400 hover:text-white">
-            <ImageIcon className="w-5 h-5" />
-          </button>
-          <button type="button" className="p-2 rounded-full text-slate-400 hover:text-emerald-400">
-            <DollarSign className="w-5 h-5" />
-          </button>
-          <input
-            type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 bg-dark-bg border border-dark-border rounded-full px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500"
-          />
-          <button
-            type="submit"
-            className="w-10 h-10 rounded-full bg-brand-600 hover:bg-brand-500 text-white flex items-center justify-center shadow-md shadow-pink-500/20"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </form>
+                    <span className={`text-[10px] block text-right opacity-70`}>
+                      {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Message Input Box */}
+          <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-dark-border bg-dark-card/90 flex items-center gap-2">
+            <input
+              type="text"
+              value={inputMsg}
+              onChange={(e) => setInputMsg(e.target.value)}
+              placeholder="Type a private message..."
+              className="flex-1 bg-dark-bg border border-dark-border rounded-full px-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+            />
+            <button
+              type="submit"
+              className="w-9 h-9 rounded-full bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-500/25 transition-all shrink-0"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -92,7 +92,6 @@ export default function CreatorProfilePage() {
     );
   }
 
-  // Default plans if none explicitly configured in database
   const displayPlans = profile.plans && profile.plans.length > 0 ? profile.plans : [
     { id: 'p1', name: '1 Month', interval: '1 Month', price: profile.creatorMonthlyPrice || '10.00' },
     { id: 'p2', name: '2 Month', interval: '2 Months', price: (Number(profile.creatorMonthlyPrice || 10) * 1.5).toFixed(2) },
@@ -100,13 +99,13 @@ export default function CreatorProfilePage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5 pb-16">
+    <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6 pb-16 px-1 sm:px-0">
       {/* Top Section: Hero Profile Card + Subscription Plans Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Creator Hero Card (Matches Screenshot) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        {/* Creator Hero Card */}
         <div className="lg:col-span-8 bg-dark-card border border-dark-border rounded-3xl overflow-hidden shadow-2xl space-y-4">
           {/* Cover Banner */}
-          <div className="h-44 sm:h-64 w-full bg-slate-800 relative overflow-hidden">
+          <div className="h-36 sm:h-56 md:h-64 w-full bg-slate-800 relative overflow-hidden">
             <img
               src={profile.cover || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80'}
               alt="Cover"
@@ -116,11 +115,11 @@ export default function CreatorProfilePage() {
           </div>
 
           {/* Profile Header Details */}
-          <div className="px-6 pb-6 pt-0 relative -mt-16 sm:-mt-20">
-            <div className="flex items-end justify-between gap-4 mb-4">
-              <div className="flex items-end gap-4">
+          <div className="px-4 sm:px-6 pb-6 pt-0 relative -mt-14 sm:-mt-20">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4">
                 {/* Circular Cutout Avatar */}
-                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-dark-card overflow-hidden bg-dark-bg shadow-2xl shrink-0 ring-2 ring-brand-500/40">
+                <div className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full border-4 border-dark-card overflow-hidden bg-dark-bg shadow-2xl shrink-0 ring-2 ring-brand-500/40">
                   <img
                     src={profile.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80'}
                     alt={profile.name}
@@ -129,7 +128,7 @@ export default function CreatorProfilePage() {
                 </div>
 
                 <div className="pb-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h1 className="font-editorial text-xl sm:text-2xl font-bold text-white tracking-wide">
                       {profile.name}
                     </h1>
@@ -151,11 +150,11 @@ export default function CreatorProfilePage() {
               </div>
 
               {/* Follow / Subscribe Action Button */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => handleSubscribe()}
                   disabled={isSubscribing || profile.isSubscribed}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold shadow-lg transition-all ${
+                  className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold shadow-lg transition-all ${
                     profile.isSubscribed
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                       : 'bg-gradient-to-r from-brand-600 to-amber-500 hover:from-brand-500 text-white shadow-brand-500/30 hover:scale-[1.02]'
@@ -168,13 +167,13 @@ export default function CreatorProfilePage() {
             </div>
 
             {/* Creator Bio */}
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-normal pt-2 border-t border-dark-border/60">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal pt-2 border-t border-dark-border/60">
               {profile.bio || 'Exclusive weekly 4K sets, behind-the-scenes, and daily 1-on-1 private messaging! Transform your experience with VIP access.'}
             </p>
           </div>
         </div>
 
-        {/* Subscription Plans Card (Right Side matching Reference Screenshot) */}
+        {/* Subscription Plans Card */}
         <div className="lg:col-span-4 bg-dark-card border border-dark-border rounded-3xl p-5 shadow-2xl flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-white">
@@ -220,7 +219,7 @@ export default function CreatorProfilePage() {
         </div>
       </div>
 
-      {/* Expandable Promotional Banner Bar (Matches Screenshot) */}
+      {/* Expandable Promotional Banner Bar */}
       <div className="bg-dark-card border border-brand-500/40 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl shadow-brand-500/5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0">
@@ -238,7 +237,7 @@ export default function CreatorProfilePage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => handleSubscribe()}
-            className="px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/30 transition-all flex items-center gap-1.5"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/30 transition-all flex items-center justify-center gap-1.5"
           >
             <span>${Number(profile.creatorMonthlyPrice || 10).toFixed(0)} Per/Month</span>
             <ChevronDown className="w-3.5 h-3.5" />
@@ -246,12 +245,12 @@ export default function CreatorProfilePage() {
         </div>
       </div>
 
-      {/* Segmented Filter Pills (Matches Screenshot) */}
-      <div className="flex items-center justify-center sm:justify-start gap-2 pt-2">
-        <div className="bg-dark-card border border-dark-border rounded-full p-1 flex items-center gap-1">
+      {/* Segmented Filter Pills */}
+      <div className="flex items-center overflow-x-auto pb-2 scrollbar-none">
+        <div className="bg-dark-card border border-dark-border rounded-full p-1 flex items-center gap-1 shrink-0">
           <button
             onClick={() => setActiveTab('timeline')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
               activeTab === 'timeline'
                 ? 'bg-dark-bg text-white shadow-sm border border-dark-border'
                 : 'text-slate-400 hover:text-white'
@@ -263,7 +262,7 @@ export default function CreatorProfilePage() {
 
           <button
             onClick={() => setActiveTab('media')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
               activeTab === 'media'
                 ? 'bg-dark-bg text-white shadow-sm border border-dark-border'
                 : 'text-slate-400 hover:text-white'
@@ -275,7 +274,7 @@ export default function CreatorProfilePage() {
 
           <button
             onClick={() => setActiveTab('videos')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
               activeTab === 'videos'
                 ? 'bg-dark-bg text-white shadow-sm border border-dark-border'
                 : 'text-slate-400 hover:text-white'
@@ -287,7 +286,7 @@ export default function CreatorProfilePage() {
 
           <button
             onClick={() => setActiveTab('shop')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
               activeTab === 'shop'
                 ? 'bg-dark-bg text-white shadow-sm border border-dark-border'
                 : 'text-slate-400 hover:text-white'
