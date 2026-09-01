@@ -120,11 +120,26 @@ export default function CreatorProfilePage() {
                 {profile.isVerified && <CheckCircle2 className="w-5 h-5 text-brand-500" />}
               </div>
               <p className="text-sm text-slate-400 font-medium">@{profile.username}</p>
-              {profile.profession && (
-                <span className="inline-block mt-1 text-xs text-pink-400 font-semibold bg-brand-500/10 px-2.5 py-0.5 rounded-full border border-brand-500/20">
-                  {profile.profession}
-                </span>
-              )}
+              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                {profile.role === 'ADMIN' ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                    👑 Platform Admin
+                  </span>
+                ) : profile.role === 'CREATOR' ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-pink-400 bg-brand-500/15 px-2.5 py-0.5 rounded-full border border-brand-500/30">
+                    ✨ Content Creator • {profile.profession || 'Creator'}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-purple-300 bg-purple-500/15 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                    💜 Member / Subscriber
+                  </span>
+                )}
+                {profile.freeSubscription && (
+                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    Free Follow
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 

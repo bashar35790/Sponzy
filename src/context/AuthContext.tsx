@@ -11,6 +11,7 @@ interface User {
   role: 'USER' | 'CREATOR' | 'ADMIN';
   avatar?: string;
   cover?: string;
+  profession?: string;
   walletBalance?: string | number;
   isVerified?: boolean;
 }

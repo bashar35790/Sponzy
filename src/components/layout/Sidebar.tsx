@@ -84,12 +84,45 @@ export const Sidebar = () => {
       </div>
 
       {user && (
-        <div className="pt-4 border-t border-dark-border">
+        <div className="pt-4 border-t border-dark-border space-y-3">
+          <Link
+            href={`/${user.username}`}
+            className="flex items-center gap-3 p-2 rounded-2xl bg-dark-card/60 hover:bg-dark-card border border-dark-border/60 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-500/40 shrink-0">
+              <img
+                src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
+                alt={user.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-slate-100 truncate group-hover:text-pink-400 transition-colors">
+                {user.name}
+              </p>
+              <div className="flex items-center gap-1 mt-0.5">
+                {user.role === 'ADMIN' ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                    👑 Admin
+                  </span>
+                ) : user.role === 'CREATOR' ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/15 text-pink-400 border border-brand-500/30 truncate max-w-[140px]">
+                    ✨ {user.profession || 'Creator'}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                    💜 Member
+                  </span>
+                )}
+              </div>
+            </div>
+          </Link>
+
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
           </button>
         </div>

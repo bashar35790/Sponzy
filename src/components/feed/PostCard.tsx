@@ -93,7 +93,12 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onTipClick }) => {
               <span>{post.user.name}</span>
               {post.user.isVerified && <CheckCircle2 className="w-4 h-4 text-brand-500 fill-brand-500/20" />}
             </div>
-            <p className="text-xs text-slate-400">@{post.user.username}</p>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <span>@{post.user.username}</span>
+              <span className="text-[10px] text-pink-400 font-bold bg-brand-500/10 px-1.5 py-0.2 rounded-full border border-brand-500/20">
+                Creator
+              </span>
+            </div>
           </div>
         </Link>
 
