@@ -112,15 +112,15 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-16 px-1 sm:px-0">
-      <div className="bg-dark-card border border-dark-border rounded-3xl h-[calc(100vh-130px)] min-h-[580px] max-h-[850px] overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
-        {/* Left Conversations Sidebar (4 cols) */}
+    <div className="max-w-6xl mx-auto pb-20 px-1 sm:px-0">
+      <div className="bg-dark-card border border-dark-border rounded-3xl h-[calc(100vh-130px)] min-h-[560px] max-h-[850px] overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-12">
+        {/* Left Conversations Sidebar (4 cols on desktop, full width on mobile) */}
         <div
           className={`md:col-span-4 border-r border-dark-border flex flex-col h-full bg-dark-card/90 ${
             showMobileChat ? 'hidden md:flex' : 'flex'
           }`}
         >
-          {/* Aligned Top Header (Matching Right Header Height) */}
+          {/* Top Search & Header Bar */}
           <div className="h-18 px-4 py-3.5 border-b border-dark-border flex flex-col justify-center shrink-0">
             <div className="relative">
               <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-slate-500" />
@@ -159,13 +159,13 @@ export default function MessagesPage() {
           </div>
         </div>
 
-        {/* Right Active Chat Pane (8 cols) */}
+        {/* Right Active Chat Pane (8 cols on desktop, full width on mobile) */}
         <div
           className={`md:col-span-8 flex flex-col h-full bg-dark-bg/60 ${
             showMobileChat ? 'flex' : 'hidden md:flex'
           }`}
         >
-          {/* Aligned Top Header (Matching Left Header Height) */}
+          {/* Aligned Top Header */}
           <div className="h-18 px-4 sm:px-6 border-b border-dark-border flex items-center justify-between bg-dark-card/95 shrink-0 z-10">
             <div className="flex items-center gap-3 min-w-0">
               <button
@@ -198,52 +198,72 @@ export default function MessagesPage() {
             </button>
           </div>
 
-          {/* Messages Stream */}
-          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4">
+          {/* Messages Stream with Perfectly Sized Responsive Bubbles */}
+          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-3.5">
             {messages.map((m) => {
               const isMine = m.senderId === user?.id || m.senderId === 'me';
+              const formattedTime = new Date(m.createdAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+
               return (
                 <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                  <div
-                    className={`max-w-[85%] sm:max-w-md rounded-3xl p-4 space-y-2.5 text-xs shadow-xl ${
-                      isMine
-                        ? 'bg-gradient-to-r from-brand-600 to-amber-500 text-white'
-                        : 'bg-dark-card border border-dark-border text-slate-200'
-                    }`}
-                  >
-                    <p className="leading-relaxed whitespace-pre-wrap">{m.body}</p>
-
-                    {/* Locked Media PPV Bubble */}
-                    {m.isLocked && (
-                      <div className="relative rounded-2xl overflow-hidden aspect-video bg-black/60 flex items-center justify-center border border-white/10 mt-2">
-                        <img
-                          src={m.media?.[0]?.url || 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80'}
-                          alt=""
-                          className="w-full h-full object-cover filter blur-md"
-                        />
-                        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-3 text-center space-y-2">
-                          <Lock className="w-5 h-5 text-brand-400" />
-                          <button
-                            onClick={() => alert(`Unlocked for $${m.price}`)}
-                            className="px-4 py-1.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-[11px] shadow-lg shadow-brand-500/30 transition-all"
-                          >
-                            Unlock for ${Number(m.price).toFixed(2)}
-                          </button>
-                        </div>
+                  {/* Sent Message Bubble (Hugs Content Naturally) */}
+                  {isMine ? (
+                    <div className="max-w-[85%] sm:max-w-[70%] bg-gradient-to-r from-brand-600 via-brand-500 to-amber-500 text-white rounded-2xl rounded-tr-xs px-3.5 py-2 shadow-lg shadow-brand-500/15">
+                      <div className="flex flex-wrap items-baseline justify-end gap-x-2.5 gap-y-0.5">
+                        <span className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-medium">
+                          {m.body}
+                        </span>
+                        <span className="text-[9px] text-white/80 font-semibold shrink-0 select-none">
+                          {formattedTime}
+                        </span>
                       </div>
-                    )}
+                    </div>
+                  ) : (
+                    /* Received Message Bubble */
+                    <div className="max-w-[85%] sm:max-w-[70%] bg-dark-card border border-dark-border text-slate-100 rounded-2xl rounded-tl-xs px-4 py-3 shadow-md space-y-2">
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                        <span className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-slate-200 font-normal">
+                          {m.body}
+                        </span>
+                        <span className="text-[9px] text-slate-500 font-semibold shrink-0 select-none ml-auto">
+                          {formattedTime}
+                        </span>
+                      </div>
 
-                    <span className="text-[10px] block text-right opacity-70">
-                      {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
+                      {/* Locked Media PPV Bubble */}
+                      {m.isLocked && (
+                        <div className="relative rounded-2xl overflow-hidden aspect-video bg-black/60 flex items-center justify-center border border-white/10 mt-2">
+                          <img
+                            src={
+                              m.media?.[0]?.url ||
+                              'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80'
+                            }
+                            alt=""
+                            className="w-full h-full object-cover filter blur-md"
+                          />
+                          <div className="absolute inset-0 bg-black/65 flex flex-col items-center justify-center p-3 text-center space-y-2">
+                            <Lock className="w-5 h-5 text-brand-400" />
+                            <button
+                              onClick={() => alert(`Unlocked for $${m.price}`)}
+                              className="px-4 py-1.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-[11px] shadow-lg shadow-brand-500/30 transition-all"
+                            >
+                              Unlock for ${Number(m.price).toFixed(2)}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Guaranteed Visible & Perfectly Spaced Message Input Bar */}
+          {/* Guaranteed Visible Message Input Bar */}
           <div className="p-3 sm:p-4 border-t border-dark-border bg-dark-card/95 shrink-0 z-10">
             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
               <button
