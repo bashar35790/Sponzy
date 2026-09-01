@@ -18,7 +18,7 @@ export const Navbar = ({ onOpenCreatePost }: { onOpenCreatePost?: () => void }) 
           </div>
           <div className="flex flex-col">
             <span className="font-editorial text-2xl font-bold tracking-tight text-white leading-none">
-              Fanpanda
+              Sponzy
             </span>
             <span className="text-[9px] font-bold tracking-widest text-brand-500 uppercase">
               VIP Club

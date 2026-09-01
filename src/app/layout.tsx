@@ -19,7 +19,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Fanpanda | Luxury Creator Club & Subscription Platform',
+  title: 'Sponzy | Luxury Creator Club & Subscription Platform',
   description: 'Connect with elite creators, unlock exclusive photos, 4K videos, VIP membership tiers, and live broadcasts.',
 };
 
