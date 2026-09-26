@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import { Lock, Mail, ArrowRight, ShieldCheck, Sparkles, UserCheck, Flame } from 'lucide-react';
+import { Button, Card, ErrorState, Input } from '@/components/ui';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center p-4 py-8">
-      <div className="w-full max-w-md bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 space-y-6">
+      <Card padding="none" className="w-full max-w-md p-6 sm:p-8 space-y-6 shadow-black/80">
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-2xl mx-auto shadow-lg shadow-brand-500/25">
@@ -103,54 +104,38 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {error && (
-          <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
-            {error}
-          </div>
-        )}
+        <ErrorState message={error} />
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">Email or Username</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                type="text"
-                value={emailOrUsername}
-                onChange={(e) => setEmailOrUsername(e.target.value)}
-                placeholder="admin@sponzy.com"
-                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-                required
-              />
-            </div>
-          </div>
+          <Input
+            label="Email or Username"
+            icon={<Mail className="w-4 h-4" />}
+            type="text"
+            value={emailOrUsername}
+            onChange={(e) => setEmailOrUsername(e.target.value)}
+            placeholder="admin@sponzy.com"
+            required
+          />
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-semibold text-slate-300">Password</label>
               <span className="text-[11px] text-slate-500">Default: password123</span>
             </div>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-                required
-              />
-            </div>
+            <Input
+              icon={<Lock className="w-4 h-4" />}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-brand-600 to-amber-500 hover:from-brand-500 text-white font-bold py-3 rounded-2xl shadow-lg shadow-brand-500/25 transition-all flex items-center justify-center gap-2 text-xs"
-          >
+          <Button type="submit" shape="card" loading={loading} className="w-full py-3">
             <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </Button>
         </form>
 
         <div className="pt-2 text-center text-xs text-slate-400">
@@ -159,7 +144,7 @@ export default function LoginPage() {
             Sign up now
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   Flame,
 } from 'lucide-react';
+import { Button, Card, ErrorState, Input } from '@/components/ui';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center p-4 py-8">
-      <div className="w-full max-w-lg bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/80 space-y-6">
+      <Card padding="none" className="w-full max-w-lg p-6 sm:p-8 space-y-6 shadow-black/80">
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-2xl mx-auto shadow-lg shadow-brand-500/25">
@@ -73,11 +74,7 @@ export default function RegisterPage() {
           <p className="text-xs text-slate-400">Choose your membership type and join the VIP community</p>
         </div>
 
-        {error && (
-          <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
-            {error}
-          </div>
-        )}
+        <ErrorState message={error} />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Role Selection Cards */}
@@ -132,66 +129,46 @@ export default function RegisterPage() {
 
           {/* Basic User Information */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Full Name</label>
-              <div className="relative">
-                <UserIcon className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Elena Ray"
-                  className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-                  required
-                />
-              </div>
-            </div>
+            <Input
+              label="Full Name"
+              icon={<UserIcon className="w-4 h-4" />}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Elena Ray"
+              required
+            />
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Username</label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-xs text-slate-500 font-bold">@</span>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="elenaray"
-                  className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-8 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-                  required
-                />
-              </div>
-            </div>
+            <Input
+              label="Username"
+              icon={<span className="text-xs text-slate-500 font-bold">@</span>}
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="elenaray"
+              required
+            />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-                required
-              />
-            </div>
-          </div>
+          <Input
+            label="Email Address"
+            icon={<Mail className="w-4 h-4" />}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            required
+          />
 
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimum 6 characters"
-                className="w-full bg-dark-bg border border-dark-border rounded-2xl pl-10 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
-                required
-              />
-            </div>
-          </div>
+          <Input
+            label="Password"
+            icon={<Lock className="w-4 h-4" />}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Minimum 6 characters"
+            required
+          />
 
           {/* Creator-Specific Fields */}
           {role === 'CREATOR' && (
@@ -246,14 +223,10 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-brand-600 to-amber-500 hover:from-brand-500 text-white font-bold py-3 rounded-2xl shadow-lg shadow-brand-500/25 transition-all flex items-center justify-center gap-2 text-xs"
-          >
+          <Button type="submit" shape="card" loading={loading} className="w-full py-3">
             <span>{loading ? 'Creating account...' : `Sign Up as ${role === 'CREATOR' ? 'Creator' : 'Member'}`}</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </Button>
         </form>
 
         <div className="pt-2 text-center text-xs text-slate-400">
@@ -262,7 +235,7 @@ export default function RegisterPage() {
             Log in here
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
