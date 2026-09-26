@@ -23,11 +23,13 @@ import {
   Share2,
 } from 'lucide-react';
 import { PostCard } from '@/components/feed/PostCard';
+import { useToast } from '@/components/ui/Toast';
 
 export default function CreatorProfilePage() {
   const params = useParams();
   const username = params?.username as string;
   const { user: currentUser } = useAuth();
+  const toast = useToast();
 
   const [profile, setProfile] = useState<any>(null);
   const [posts, setPosts] = useState<any[]>([]);
@@ -74,11 +76,11 @@ export default function CreatorProfilePage() {
         planId: targetPlan,
       });
       if (res.data.success) {
-        alert(res.data.message || 'Subscribed successfully!');
+        toast.success(res.data.message || 'Subscribed successfully!');
         window.location.reload();
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Subscription failed. Please check your wallet balance.');
+      toast.error(err.response?.data?.error || 'Subscription failed. Please check your wallet balance.');
     } finally {
       setIsSubscribing(false);
     }

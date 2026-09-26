@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/Toast';
 import {
   Send,
   Image as ImageIcon,
@@ -20,6 +21,7 @@ import {
 
 export default function MessagesPage() {
   const { user } = useAuth();
+  const toast = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [conversations, setConversations] = useState<any[]>([
@@ -229,7 +231,7 @@ export default function MessagesPage() {
             </div>
 
             <button
-              onClick={() => alert('Tip sent to creator!')}
+              onClick={() => toast.success('Tip sent to creator!')}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-white font-bold text-xs border border-brand-500/30 transition-all shadow-sm shrink-0"
             >
               <DollarSign className="w-3.5 h-3.5" />
@@ -286,7 +288,7 @@ export default function MessagesPage() {
                           <div className="absolute inset-0 bg-black/65 flex flex-col items-center justify-center p-3 text-center space-y-2">
                             <Lock className="w-5 h-5 text-brand-400" />
                             <button
-                              onClick={() => alert(`Unlocked for $${m.price}`)}
+                              onClick={() => toast.success(`Unlocked for $${m.price}`)}
                               className="px-4 py-1.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-[11px] shadow-lg shadow-brand-500/30 transition-all"
                             >
                               Unlock for ${Number(m.price).toFixed(2)}
@@ -307,7 +309,7 @@ export default function MessagesPage() {
             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => alert('Photo attachment modal opened!')}
+                onClick={() => toast.info('Photo attachments are coming soon!')}
                 className="p-2 rounded-full text-slate-400 hover:text-brand-400 hover:bg-dark-bg transition-colors shrink-0"
               >
                 <Paperclip className="w-4 h-4" />

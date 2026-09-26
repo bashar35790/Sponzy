@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useToast } from '@/components/ui/Toast';
 import {
   Heart,
   MessageCircle,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 
 export default function ReelsPage() {
+  const toast = useToast();
   const [reels, setReels] = useState<any[]>([]);
   const [likedReels, setLikedReels] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
@@ -186,7 +188,7 @@ export default function ReelsPage() {
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
-                      alert('Reel link copied to clipboard!');
+                      toast.success('Reel link copied to clipboard!');
                     }}
                     className="w-10 h-10 rounded-full bg-dark-bg/80 backdrop-blur-md border border-white/20 flex items-center justify-center text-slate-200 hover:text-white transition-colors"
                   >

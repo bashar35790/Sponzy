@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Radio, Users, Heart, MessageCircle, DollarSign, Send, CheckCircle2 } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 export default function LivePage() {
+  const toast = useToast();
   const [messages, setMessages] = useState([
     { id: '1', user: 'Alex Rivera', comment: 'Welcome to the live stream everyone! 🔥' },
     { id: '2', user: 'Maya Lin', comment: 'Hello! Excited for the live workout session.' },
@@ -62,7 +64,7 @@ export default function LivePage() {
 
             <div className="flex items-center justify-between">
               <button
-                onClick={() => alert('Tip sent!')}
+                onClick={() => toast.success('Tip sent!')}
                 className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs px-4 py-2 rounded-full shadow-lg shadow-emerald-500/25 transition-all"
               >
                 <DollarSign className="w-4 h-4" />

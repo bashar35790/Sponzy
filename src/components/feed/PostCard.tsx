@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useToast } from '@/components/ui/Toast';
 
 interface PostCardProps {
   post: {
@@ -52,6 +53,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onTipClick }) => {
   const [likesCount, setLikesCount] = useState(post.likesCount || 0);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
   const [isUnlocking, setIsUnlocking] = useState(false);
+  const toast = useToast();
 
   const handleToggleLike = async () => {
     try {
@@ -72,11 +74,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onTipClick }) => {
       setIsUnlocking(true);
       const res = await api.post(`/posts/${post.id}/unlock`);
       if (res.data.success) {
-        alert('Post unlocked successfully!');
+        toast.success('Post unlocked successfully!');
         window.location.reload();
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to unlock post. Please top up your wallet balance.');
+      toast.error(err.response?.data?.error || 'Failed to unlock post. Please top up your wallet balance.');
     } finally {
       setIsUnlocking(false);
     }
@@ -226,7 +228,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onTipClick }) => {
         <button
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
-            alert('Post link copied to clipboard!');
+            toast.success('Post link copied to clipboard!');
           }}
           className="text-slate-400 hover:text-white p-1 rounded-full transition-colors"
         >

@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useToast } from '@/components/ui/Toast';
 import { ShoppingBag, Sparkles, Download, CheckCircle2, DollarSign, Flame, FileText, ArrowRight } from 'lucide-react';
 
 export default function ShopPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,10 +33,10 @@ export default function ShopPage() {
       setPurchasingId(productId);
       const res = await api.post(`/shop/products/${productId}/purchase`);
       if (res.data.success) {
-        alert(res.data.message || 'Product unlocked! Download link generated.');
+        toast.success(res.data.message || 'Product unlocked! Download link generated.');
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Purchase failed. Please check your wallet balance.');
+      toast.error(err.response?.data?.error || 'Purchase failed. Please check your wallet balance.');
     } finally {
       setPurchasingId(null);
     }

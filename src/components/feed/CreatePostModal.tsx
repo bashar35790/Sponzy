@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Image as ImageIcon, Lock, DollarSign, Globe, Users } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useToast } from '@/components/ui/Toast';
 
 export const CreatePostModal = ({
   isOpen,
@@ -18,6 +19,7 @@ export const CreatePostModal = ({
   const [price, setPrice] = useState('');
   const [mediaUrl, setMediaUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   if (!isOpen) return null;
 
@@ -37,7 +39,7 @@ export const CreatePostModal = ({
         window.location.reload();
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to create post');
+      toast.error(err.response?.data?.error || 'Failed to create post');
     } finally {
       setLoading(false);
     }

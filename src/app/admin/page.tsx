@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
+import { useToast } from '@/components/ui/Toast';
 import {
   ShieldCheck,
   Users,
@@ -34,6 +35,7 @@ export default function AdminPage() {
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const toast = useToast();
 
   // Protection
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function AdminPage() {
       );
       fetchAdminData();
     } catch (err) {
-      alert('Failed to update verification status.');
+      toast.error('Failed to update verification status.');
     } finally {
       setActionLoading(null);
     }
