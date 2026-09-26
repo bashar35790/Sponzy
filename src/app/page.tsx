@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { StoryTray } from '@/components/feed/StoryTray';
 import { PostCard } from '@/components/feed/PostCard';
 import { CreatePostModal } from '@/components/feed/CreatePostModal';
+import { OPEN_CREATE_POST_EVENT } from '@/components/layout/Navbar';
 import {
   Sparkles,
   Flame,
@@ -111,6 +112,13 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  // Open the composer when the navbar "Create Post" button is pressed
+  useEffect(() => {
+    const openComposer = () => setIsCreatePostOpen(true);
+    window.addEventListener(OPEN_CREATE_POST_EVENT, openComposer);
+    return () => window.removeEventListener(OPEN_CREATE_POST_EVENT, openComposer);
   }, []);
 
   return (

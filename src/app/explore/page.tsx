@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Search, Sparkles, CheckCircle2, Flame, MapPin, DollarSign, Filter } from 'lucide-react';
 
@@ -56,11 +57,17 @@ const INITIAL_EXPLORE_CREATORS = [
   },
 ];
 
-export default function ExplorePage() {
+function ExploreContent() {
+  const searchParams = useSearchParams();
   const [creators, setCreators] = useState<any[]>(INITIAL_EXPLORE_CREATORS);
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('q') ?? '');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
+
+  // Keep the search box in sync when arriving via navbar search (?q=...)
+  useEffect(() => {
+    setSearch(searchParams.get('q') ?? '');
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchCreators = async () => {
@@ -237,5 +244,20 @@ export default function ExplorePage() {
         </div>
       )}
     </div>
+  );
+}
+
+// useSearchParams requires a Suspense boundary for static prerendering
+export default function ExplorePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-6xl mx-auto text-center py-16 text-xs text-slate-400">
+          Loading creators...
+        </div>
+      }
+    >
+      <ExploreContent />
+    </Suspense>
   );
 }
