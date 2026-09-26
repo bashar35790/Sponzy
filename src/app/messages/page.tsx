@@ -243,7 +243,7 @@ export default function MessagesPage() {
           <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-3.5">
             {messages.map((m) => {
               const isMine = m.senderId === user?.id || m.senderId === 'me';
-              const formattedTime = new Date(m.createdAt).toLocaleTimeString([], {
+              const formattedTime = new Date(m.createdAt).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
               });

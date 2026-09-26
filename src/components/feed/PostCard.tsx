@@ -110,7 +110,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onTipClick }) => {
               <span>@{post.user.username}</span>
               <span>•</span>
               <span className="text-[11px] text-slate-500">
-                {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </span>
             </div>
           </div>

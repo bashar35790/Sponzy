@@ -294,7 +294,7 @@ export default function AdminPage() {
                           )}
                         </td>
                         <td className="py-3.5 px-4 text-slate-500">
-                          {new Date(req.createdAt).toLocaleDateString()}
+                          {new Date(req.createdAt).toLocaleDateString('en-US')}
                         </td>
                         <td className="py-3.5 px-4 text-right">
                           {req.status === 'PENDING' ? (
@@ -409,7 +409,7 @@ export default function AdminPage() {
                       </td>
                       <td className="py-3.5 px-4">{u._count?.posts || 0}</td>
                       <td className="py-3.5 px-4 text-slate-500">
-                        {new Date(u.createdAt).toLocaleDateString()}
+                        {new Date(u.createdAt).toLocaleDateString('en-US')}
                       </td>
                     </tr>
                   ))}
@@ -451,7 +451,7 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td className="py-3.5 px-4 text-slate-500">
-                          {new Date(tx.createdAt).toLocaleDateString()}
+                          {new Date(tx.createdAt).toLocaleDateString('en-US')}
                         </td>
                       </tr>
                     ))}
