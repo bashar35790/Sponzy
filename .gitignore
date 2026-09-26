@@ -9,12 +9,15 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+# Never ignore the example template
+!.env.example
 
 # Production Builds
 dist/
 build/
 .next/
 out/
+*.tsbuildinfo
 
 # Logs & Debug
 npm-debug.log*
